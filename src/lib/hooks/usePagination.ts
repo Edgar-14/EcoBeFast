@@ -52,7 +52,7 @@ export const usePagination = <T extends DocumentData>(
       const newData = documentSnapshots.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as T[];
+      } as unknown)) as T[];
 
       setLastDoc(documentSnapshots.docs[documentSnapshots.docs.length - 1] || null);
       setData(prevData => lastDoc ? [...prevData, ...newData] : newData);

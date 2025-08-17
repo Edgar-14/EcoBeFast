@@ -8,6 +8,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   serverTimestamp,
   Timestamp
 } from 'firebase/firestore';
@@ -88,7 +89,7 @@ export class DriverService {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as Driver;
+        return { id: docSnap.id, ...docSnap.data() } as unknown as Driver;
       }
       return null;
     } catch (error) {
@@ -117,7 +118,7 @@ export class DriverService {
   // Get driver orders
   static async getOrders(
     driverId: string,
-    limit: number = 25
+    limitCount: number = 25
   ): Promise<any[]> {
     try {
       const ordersRef = collection(db, 'orders');
@@ -125,7 +126,7 @@ export class DriverService {
         ordersRef,
         where('driverId', '==', driverId),
         orderBy('createdAt', 'desc'),
-        limit(limit)
+        limit(limitCount)
       );
 
       const querySnapshot = await getDocs(q);
@@ -142,7 +143,7 @@ export class DriverService {
   // Get wallet transactions
   static async getWalletTransactions(
     driverId: string,
-    limit: number = 50
+    limitCount: number = 50
   ): Promise<any[]> {
     try {
       const transactionsRef = collection(db, 'walletTransactions');
@@ -150,7 +151,7 @@ export class DriverService {
         transactionsRef,
         where('driverId', '==', driverId),
         orderBy('createdAt', 'desc'),
-        limit(limit)
+        limit(limitCount)
       );
 
       const querySnapshot = await getDocs(q);
@@ -243,9 +244,8 @@ export class DriverService {
 
       // Update driver profile with new document URLs
       await this.updateProfile(driverId, {
-        documents: documentUrls,
         documentsUpdatedAt: new Date()
-      });
+      } as Partial<Driver>);
     } catch (error) {
       console.error('Error updating documents:', error);
       throw error;

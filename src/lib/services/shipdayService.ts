@@ -41,7 +41,7 @@ export class ShipdayService {
 
   static async createOrder(order: any): Promise<number> {
     const response = await this.request('orders', 'POST', order);
-    return response.orderId;
+    return response.orderId ?? 0;
   }
 
   static async getOrder(orderId: number): Promise<any> {
@@ -50,7 +50,7 @@ export class ShipdayService {
 
   static async registerDriver(driver: any): Promise<string> {
     const response = await this.request('drivers', 'POST', driver);
-    return response.id;
+    return response.id ? String(response.id) : '';
   }
 
   static async updateDriverStatus(driverId: string, status: string): Promise<any> {

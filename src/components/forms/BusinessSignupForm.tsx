@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +8,7 @@ import { Mail, Lock, User, Phone, MapPin, Building } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/lib/hooks/useToast';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { businessSignupSchema } from '@/lib/utils/validations';
 import { getPasswordStrength } from '@/lib/utils/validations';
 // import AddressAutocomplete from '@/components/maps/AddressAutocomplete';
