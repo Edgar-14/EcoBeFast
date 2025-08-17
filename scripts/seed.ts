@@ -50,7 +50,7 @@ const sendTransactionalEmail = async (email: string, subject: string, content: s
 };
 
 const adminUsers = [
-  { email: 'soporte@befastapp.com.mx', role: 'SUPER_ADMIN' },
+  { email: 'egarcia@befastapp.com.mx', role: 'SUPER_ADMIN' },
   { email: 'documentos@befastapp.com.mx', role: 'ADMIN' },
   { email: 'revisiones@befastapp.com.mx', role: 'ADMIN' },
   { email: 'guillezamoracolima@hotmail.com', role: 'CONTADORA' },

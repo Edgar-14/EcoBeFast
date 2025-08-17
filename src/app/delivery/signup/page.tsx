@@ -38,7 +38,11 @@ export default function DeliverySignupPage() {
       console.log('Signup successful for:', formData.email);
       router.push('/delivery/login?signup=success');
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error inesperado.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +51,7 @@ export default function DeliverySignupPage() {
   return (
     <AuthLayout>
       <Card>
-        <h1 className="text-2xl font-bold text-center text-befast-text mb-6">Registro para Negocios</h1>
+    <h1 className="text-2xl font-bold text-center title-gradient mb-6">Registro de Negocio</h1>
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
             <label htmlFor="businessName" className="block text-sm font-medium text-gray-700">Nombre del Negocio</label>

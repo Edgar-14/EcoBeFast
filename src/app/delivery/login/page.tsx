@@ -30,7 +30,11 @@ export default function DeliveryLoginPage() {
         throw new Error('Credenciales inválidas. Intenta con test@negocio.com');
       }
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error inesperado.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -39,7 +43,7 @@ export default function DeliveryLoginPage() {
   return (
     <AuthLayout>
       <Card>
-        <h1 className="text-2xl font-bold text-center text-befast-text mb-6">Iniciar Sesión - Negocios</h1>
+  <h1 className="text-2xl font-bold text-center title-gradient mb-6">Iniciar Sesión - Negocios</h1>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Correo Electrónico</label>

@@ -1,34 +1,27 @@
 import Link from 'next/link';
+import { FaInstagram, FaFacebook, FaEnvelope, FaPhone, FaUserShield } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 className="text-lg font-bold text-befast-primary mb-4">Contacto y Soporte</h3>
-          <ul className="space-y-2">
-            <li><a href="https://wa.me/5213121905494" target="_blank" rel="noopener noreferrer" className="hover:text-befast-primary transition-colors">WhatsApp Soporte</a></li>
-            <li><a href="mailto:soporte@befastapp.com.mx" className="hover:text-befast-primary transition-colors">Email Soporte</a></li>
-          </ul>
+  <footer className="w-full py-8 px-4 border-t border-blue-100 bg-white/60 backdrop-blur-md shadow-inner">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-row space-x-6 text-2xl">
+          <a href="https://www.instagram.com/befastmarket/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-befast-primary"><FaInstagram /></a>
+          <a href="https://www.facebook.com/befastmarket1/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-befast-primary"><FaFacebook /></a>
+          <a href="mailto:soporte@befastapp.com.mx" aria-label="Email" className="hover:text-befast-primary"><FaEnvelope /></a>
+          <a href="https://wa.me/5213121905494" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="hover:text-befast-primary"><FaPhone /></a>
+          <Link href="/admin/login" aria-label="Admin" className="hover:text-befast-primary"><FaUserShield /></Link>
         </div>
-        <div>
-          <h3 className="text-lg font-bold text-befast-primary mb-4">Redes Sociales</h3>
-          <ul className="space-y-2">
-            <li><a href="https://www.facebook.com/befastmarket1/" target="_blank" rel="noopener noreferrer" className="hover:text-befast-primary transition-colors">Facebook</a></li>
-            <li><a href="https://www.instagram.com/befastmarket/" target="_blank" rel="noopener noreferrer" className="hover:text-befast-primary transition-colors">Instagram</a></li>
-          </ul>
+        <div className="text-center text-xs mt-2">
+          <div>© 2025 BeFast. Todos los derechos reservados.</div>
+          <div className="space-x-2 mt-1">
+            <Link href="/terms" className="hover:underline">Términos y Condiciones</Link>
+            <span>|</span>
+            <Link href="/privacy" className="hover:underline">Política de Privacidad</Link>
+            <span>|</span>
+            <Link href="/admin/login" className="hover:underline">Admin</Link>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-bold text-befast-primary mb-4">Legal y Administrativo</h3>
-          <ul className="space-y-2">
-            <li><Link href="/terms" className="hover:text-befast-primary transition-colors">Términos y Condiciones</Link></li>
-            <li><Link href="/privacy" className="hover:text-befast-primary transition-colors">Política de Privacidad</Link></li>
-            <li><Link href="/admin/login" className="hover:text-befast-primary transition-colors">Admin Login</Link></li>
-          </ul>
-        </div>
-      </div>
-      <div className="mt-8 pt-8 border-t border-gray-700 text-center text-sm">
-        <p>&copy; {new Date().getFullYear() + 1} BeFast. Todos los derechos reservados.</p>
       </div>
     </footer>
   );

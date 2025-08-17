@@ -6,17 +6,11 @@ type AuthLayoutProps = {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center z-0"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop')" }}
-      ></div>
-      {/* Blur Overlay */}
-      <div className="absolute inset-0 bg-white/30 backdrop-blur-sm z-10"></div>
-
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-white">
+      {/* Glass Blur Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-blue-50 to-white backdrop-blur-2xl z-0" />
       {/* Content */}
-      <div className="relative z-20 w-full max-w-md">
+      <div className="relative z-10 w-full max-w-md">
         {children}
       </div>
     </div>

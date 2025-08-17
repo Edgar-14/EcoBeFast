@@ -17,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="h-full">
-      <body className={`${inter.className} flex flex-col h-full bg-befast-bg text-befast-text`}>
+      <body className={`${inter.className} flex flex-col h-full bg-white text-befast-text relative`}>
+        {/* Glass blur overlay global */}
+        <div className="fixed inset-0 bg-gradient-to-br from-blue-100 via-blue-50 to-white backdrop-blur-2xl -z-10" />
         <main className="flex-grow">
           {children}
         </main>

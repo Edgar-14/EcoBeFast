@@ -4,7 +4,16 @@ import { useState } from 'react';
 import Card from '@/components/ui/Card';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
-const FormInput = ({ id, label, value, onChange, required = true, disabled = false }) => (
+type FormInputProps = {
+  id: string;
+  label: string;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+  disabled?: boolean;
+};
+
+const FormInput: React.FC<FormInputProps> = ({ id, label, value, onChange, required = true, disabled = false }) => (
   <div>
     <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
     <input
@@ -29,11 +38,11 @@ export default function DeliveryDashboardPage() {
     notes: '',
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setOrder({ ...order, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Creating order:', order);
     alert('Creando pedido... (simulación)');
@@ -42,7 +51,7 @@ export default function DeliveryDashboardPage() {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-befast-text">Dashboard de Negocio</h1>
+    <h1 className="text-3xl font-bold title-gradient">Dashboard de Negocio</h1>
         <Card className="!p-4 text-center">
           <p className="text-lg font-bold text-befast-secondary">10 Créditos</p>
           <p className="text-sm text-gray-500">disponibles</p>
@@ -55,9 +64,9 @@ export default function DeliveryDashboardPage() {
           {/* Pickup Section */}
           <fieldset className="space-y-4">
             <legend className="text-xl font-semibold text-befast-text mb-4">Recogida</legend>
-            <FormInput id="pickupName" label="Nombre del Negocio" value="Mi Negocio Ficticio" disabled />
-            <FormInput id="pickupAddress" label="Dirección de Origen" value="Calle Falsa 123, Col. Centro" disabled />
-            <FormInput id="pickupPhone" label="Teléfono de Origen" value="3121234567" disabled />
+            <FormInput id="pickupName" label="Nombre del Negocio" value="Mi Negocio Ficticio" disabled onChange={() => {}} />
+            <FormInput id="pickupAddress" label="Dirección de Origen" value="Calle Falsa 123, Col. Centro" disabled onChange={() => {}} />
+            <FormInput id="pickupPhone" label="Teléfono de Origen" value="3121234567" disabled onChange={() => {}} />
           </fieldset>
 
           {/* Delivery Section */}

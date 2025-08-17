@@ -35,7 +35,11 @@ export default function AdminLoginPage() {
         throw new Error('Acceso denegado. Verifica tus credenciales.');
       }
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error inesperado.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +48,7 @@ export default function AdminLoginPage() {
   return (
     <AuthLayout>
       <Card>
-        <h1 className="text-2xl font-bold text-center text-befast-text mb-6">Portal de Administrador</h1>
+  <h1 className="text-2xl font-bold text-center title-gradient mb-6">Portal de Administrador</h1>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Correo Electrónico</label>

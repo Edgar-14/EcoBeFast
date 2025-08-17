@@ -1,6 +1,6 @@
 import React from 'react';
 
-type PrimaryButtonProps = {
+type SecondaryButtonProps = {
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
@@ -8,11 +8,11 @@ type PrimaryButtonProps = {
   className?: string;
 };
 
-const PrimaryButton: React.FC<PrimaryButtonProps> = ({ children, onClick, disabled, type = 'button', className = '' }) => {
+const SecondaryButton: React.FC<SecondaryButtonProps> = ({ children, onClick, disabled, type = 'button', className = '' }) => {
   return (
     <button
       type={type}
-      className={`relative overflow-hidden font-bold py-3 px-6 rounded-lg shadow-lg text-white bg-gradient-to-r from-blue-400 via-blue-500 to-yellow-400 bg-[length:200%_200%] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`relative overflow-hidden font-bold py-3 px-6 rounded-lg shadow-lg text-white bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-400 bg-[length:200%_200%] transition-all duration-300 hover:scale-105 hover:shadow-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       onClick={onClick}
       disabled={disabled}
       style={{backgroundPosition: 'left'}}
@@ -24,4 +24,4 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({ children, onClick, disabl
   );
 };
 
-export default PrimaryButton;
+export default SecondaryButton;
