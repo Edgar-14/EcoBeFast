@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --befast-primary: #f59e0b;
+  --befast-secondary: #3b82f6;
+  --befast-success: #10b981;
+  --befast-error: #ef4444;
+  --befast-warning: #f59e0b;
+  --befast-info: #3b82f6;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background-color: #f8fafc;
+  color: #020817;
+}

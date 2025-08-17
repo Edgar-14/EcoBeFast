@@ -8,6 +8,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   serverTimestamp,
   runTransaction
 } from 'firebase/firestore';
@@ -24,7 +25,7 @@ export class BusinessService {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as Business;
+        return { id: docSnap.id, ...docSnap.data() } as unknown as Business;
       }
       return null;
     } catch (error) {
@@ -82,7 +83,7 @@ export class BusinessService {
   // Get business orders
   static async getOrders(
     businessId: string,
-    limit: number = 25
+    limitCount: number = 25
   ): Promise<Order[]> {
     try {
       const ordersRef = collection(db, 'orders');
@@ -90,7 +91,7 @@ export class BusinessService {
         ordersRef,
         where('businessId', '==', businessId),
         orderBy('createdAt', 'desc'),
-        limit(limit)
+        limit(limitCount)
       );
 
       const querySnapshot = await getDocs(q);
