@@ -1,12 +1,112 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Deny all reads and writes by default.
-    // Specific rules for collections will be added below.
+    // Default deny all
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // Admin users collection
+    match /adminUsers/{userId} {
+      allow read: if isAdmin() && request.auth.uid == userId;
+    }
+
+    // Businesses collection
+    match /businesses/{businessId} {
+      allow read: if isAdmin() || (isBusiness() && request.auth.uid == businessId);
+      allow update: if isAdmin() || (isBusiness() && request.auth.uid == businessId && isValidBusinessUpdate());
+      // Create only via Cloud Function
+    }
+
+    // Drivers collection
+    match /drivers/{driverId} {
+      allow read: if isAdmin() || (isDriver() && request.auth.uid == driverId);
+      allow update: if isAdmin();
+      // Create only via Cloud Function (after approval)
+    }
+
+    // Driver applications
+    match /driverApplications/{applicationId} {
+      allow create: if request.auth != null && isValidDriverApplication();
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == resource.data.applicantUid);
+      allow update: if isAdmin();
+    }
+
+    // Orders collection
+    match /orders/{orderId} {
+      allow read: if isAdmin() || isOrderParticipant(orderId);
+      allow create: if isBusiness() && hasCredits() && isValidOrder();
+      allow update: if isAdmin();
+    }
+
+    // Credit purchase requests
+    match /creditPurchaseRequests/{requestId} {
+      allow create: if isBusiness() && request.auth.uid == resource.data.businessId;
+      allow read: if isAdmin() || (isBusiness() && request.auth.uid == resource.data.businessId);
+      allow update: if isAdmin();
+    }
+
+    // Debt payments
+    match /debtPayments/{paymentId} {
+      allow create: if isDriver() && request.auth.uid == resource.data.driverId;
+      allow read: if isAdmin() || (isDriver() && request.auth.uid == resource.data.driverId);
+      allow update: if isAdmin();
+    }
+
+    // Audit logs (read-only for admins)
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only Cloud Functions can write
+    }
+
+    // System metrics (read-only for super admin)
+    match /systemMetrics/{metricId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Only Cloud Functions can write
+    }
+
+    // Helper functions
+    function isAdmin() {
+      return request.auth != null &&
+             ('ADMIN' in request.auth.token || 'SUPER_ADMIN' in request.auth.token);
+    }
+
+    function isSuperAdmin() {
+      return request.auth != null && 'SUPER_ADMIN' in request.auth.token;
+    }
+
+    function isBusiness() {
+      return request.auth != null && 'BUSINESS' in request.auth.token;
+    }
+
+    function isDriver() {
+      return request.auth != null && 'DRIVER' in request.auth.token;
+    }
+
+    function isOrderParticipant(orderId) {
+      let order = get(/databases/$(database)/documents/orders/$(orderId));
+      return request.auth.uid == order.data.businessId ||
+             request.auth.uid == order.data.driverId;
+    }
+
+    function hasCredits() {
+      let business = get(/databases/$(database)/documents/businesses/$(request.auth.uid));
+      return business.data.availableCredits > 0;
+    }
+
+    function isValidBusinessUpdate() {
+      // Only allow updating specific fields
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['contactName', 'phone', 'location']);
+    }
+
+    function isValidDriverApplication() {
+      return request.resource.data.keys().hasAll(['personalInfo', 'vehicleInfo']);
+    }
+
+    function isValidOrder() {
+      return request.resource.data.keys().hasAll(['businessId', 'deliveryInfo', 'paymentMethod']) &&
+             request.resource.data.businessId == request.auth.uid;
     }
   }
 }

@@ -1,19 +1,75 @@
+'use client';
+
 import React from 'react';
+import { cn } from '@/lib/utils/helpers';
 
-type CardProps = {
-  children: React.ReactNode;
-  className?: string;
-};
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'befast';
+  hover?: boolean;
+}
 
-const Card: React.FC<CardProps> = ({ children, className = '' }) => {
-  return (
-    <div
-      className={`rounded-2xl border border-blue-100 shadow-2xl p-8 bg-white/70 backdrop-blur-xl transition-all duration-300 hover:border-blue-400 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.25)] hover:ring-2 hover:ring-blue-200 ${className}`}
-      style={{filter:'drop-shadow(0 4px 24px rgba(31,38,135,0.10))'}}
-    >
-      {children}
-    </div>
-  );
-};
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({
+    className,
+    header,
+    footer,
+    children,
+    padding = 'lg',
+    shadow = 'md',
+    hover = false,
+    ...props
+  }, ref) => {
+    const paddings = {
+      none: '',
+      sm: 'p-4',
+      md: 'p-6',
+      lg: 'p-8',
+      xl: 'p-10'
+    };
 
-export default Card;
+    const shadows = {
+      none: '',
+      sm: 'shadow-sm',
+      md: 'shadow-md',
+      lg: 'shadow-lg',
+      xl: 'shadow-xl',
+      befast: 'shadow-befast'
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'bg-white rounded-lg border border-gray-200',
+          shadows[shadow],
+          hover && 'transition-shadow duration-300 hover:shadow-lg',
+          className
+        )}
+        {...props}
+      >
+        {header && (
+          <div className="px-6 py-4 border-b border-gray-200 rounded-t-lg bg-gray-50">
+            {header}
+          </div>
+        )}
+
+        <div className={paddings[padding]}>
+          {children}
+        </div>
+
+        {footer && (
+          <div className="px-6 py-4 border-t border-gray-200 rounded-b-lg bg-gray-50">
+            {footer}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+Card.displayName = 'Card';
+
+export { Card };
