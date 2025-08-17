@@ -46,6 +46,9 @@ export default function DeliverySignupPage() {
     } finally {
       setIsLoading(false);
     }
+      import { createUserWithEmailAndPassword } from 'firebase/auth';
+      import { auth, db } from '@/lib/firebase';
+      import { doc, setDoc } from 'firebase/firestore';
   };
 
   return (
@@ -70,15 +73,22 @@ export default function DeliverySignupPage() {
             <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required minLength={8} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-befast-primary focus:border-befast-primary" />
           </div>
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700">Dirección</label>
-            <input type="text" id="address" name="address" value={formData.address} onChange={handleChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-befast-primary focus:border-befast-primary" />
-          </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Teléfono del Negocio</label>
-            <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required pattern="\d{10}" title="El teléfono debe tener 10 dígitos" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-befast-primary focus:border-befast-primary" />
-          </div>
+          try {
+            // Crear usuario en Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            // Guardar datos adicionales en Firestore
+            await setDoc(doc(db, 'businesses', userCredential.user.uid), {
+              businessName: formData.businessName,
+              contactName: formData.contactName,
+              email: formData.email,
+              address: formData.address,
+              phone: formData.phone,
+              createdAt: new Date(),
+              uid: userCredential.user.uid,
+            });
+            router.push('/delivery/login?signup=success');
           {error && <p className="text-sm text-befast-error text-center">{error}</p>}
-          <PrimaryButton type="submit" className="w-full" disabled={isLoading}>
+            setError(err?.message || 'Ocurrió un error inesperado.');
             {isLoading ? 'Registrando...' : 'Registrar mi Negocio'}
           </PrimaryButton>
         </form>

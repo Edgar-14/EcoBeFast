@@ -1,6 +1,24 @@
 'use client';
 
 import { useState } from 'react';
+// Tipado fuerte para los datos del formulario de onboarding
+export interface DriverOnboardingData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  ineFront?: File;
+  ineBack?: File;
+  addressProof?: File;
+  taxId?: File;
+  signature?: string;
+  quiz?: Record<string, string>;
+  thermalBagPhoto?: File;
+}
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db, storage } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Card from '@/components/ui/Card';
 
 import Step1_PersonalData from './Step1_PersonalData';
@@ -11,7 +29,13 @@ import Step4_Training from './Step4_Training';
 
 const OnboardingForm = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<DriverOnboardingData>({
+    email: '',
+    password: '',
+    fullName: '',
+    phone: '',
+    // Los archivos y otros campos se agregan dinámicamente
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -20,13 +44,41 @@ const OnboardingForm = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    console.log("Submitting application with data:", formData);
-    // In a real application, you would send this data to a Firebase Function.
-    // The function would handle file uploads to Storage and save data to Firestore.
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Application submitted successfully!");
+      // 1. Crear usuario en Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const uid = userCredential.user.uid;
+
+      // 2. Subir archivos a Storage y obtener URLs
+  const uploadFile = async (file: File | undefined, path: string): Promise<string | null> => {
+        if (!file) return null;
+        const storageRef = ref(storage, `${path}/${uid}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      };
+
+      const ineFrontUrl = await uploadFile(formData.ineFront, 'drivers/ineFront');
+      const ineBackUrl = await uploadFile(formData.ineBack, 'drivers/ineBack');
+      const addressProofUrl = await uploadFile(formData.addressProof, 'drivers/addressProof');
+      const taxIdUrl = await uploadFile(formData.taxId, 'drivers/taxId');
+      const thermalBagPhotoUrl = await uploadFile(formData.thermalBagPhoto, 'drivers/thermalBagPhoto');
+
+      // 3. Guardar datos en Firestore
+      await setDoc(doc(db, 'drivers', uid), {
+        email: formData.email,
+        fullName: formData.fullName,
+        phone: formData.phone,
+        ineFrontUrl,
+        ineBackUrl,
+        addressProofUrl,
+        taxIdUrl,
+        signature: formData.signature || null,
+        quiz: formData.quiz || {},
+        thermalBagPhotoUrl,
+        createdAt: new Date(),
+        status: 'pending',
+        uid,
+      });
       setIsSubmitted(true);
     } catch (error) {
       console.error("Submission failed:", error);

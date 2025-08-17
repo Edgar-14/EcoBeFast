@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import Card from '@/components/ui/Card';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 
@@ -30,6 +31,14 @@ const FormInput: React.FC<FormInputProps> = ({ id, label, value, onChange, requi
 );
 
 export default function DeliveryDashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DeliveryDashboardContent />
+    </ProtectedRoute>
+  );
+}
+
+function DeliveryDashboardContent() {
   const [order, setOrder] = useState({
     customerName: '',
     customerPhone: '',

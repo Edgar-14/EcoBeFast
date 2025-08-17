@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthLayout from '@/components/AuthLayout';
@@ -19,22 +21,13 @@ export default function DeliveryLoginPage() {
     setIsLoading(true);
     setError('');
 
-    // Simulate Firebase login
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // In a real app, you'd use signInWithEmailAndPassword from Firebase
-      if (email === 'test@negocio.com' && password === 'password') {
-        console.log('Login successful');
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (userCredential.user) {
         router.push('/delivery/dashboard');
-      } else {
-        throw new Error('Credenciales inválidas. Intenta con test@negocio.com');
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Ocurrió un error inesperado.');
-      }
+    } catch (err: any) {
+      setError(err?.message || 'Ocurrió un error inesperado.');
     } finally {
       setIsLoading(false);
     }
