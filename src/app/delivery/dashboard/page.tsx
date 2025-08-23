@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import Footer from '@/components/ui/Footer';
 import Image from 'next/image';
 import { BusinessService } from '@/lib/services/businessService';
+import { MapsService } from '@/lib/services/mapsService';
 
 export default function DeliveryDashboard() {
   const { user } = useAuth();
@@ -52,11 +53,19 @@ export default function DeliveryDashboard() {
     setOrderLoading(true);
     try {
       if (!user) throw new Error('Usuario no autenticado');
+      
+      // Geocode the delivery address to get real coordinates
+      const coordinates = await MapsService.geocodeAddress(form.address);
+      if (!coordinates) {
+        setError('No se pudo encontrar la dirección especificada. Por favor verifica la dirección.');
+        return;
+      }
+
       await BusinessService.createOrder(business.uid, {
         customerName: form.customerName,
         customerPhone: form.customerPhone,
         deliveryAddress: form.address,
-        deliveryCoordinates: { lat: 0, lng: 0 }, // TODO: Integrar coordenadas reales
+        deliveryCoordinates: coordinates,
         amountToCollect: parseFloat(form.amountToCollect) || 0,
         paymentMethod: "CASH",
         notes: form.notes,
